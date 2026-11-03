@@ -1,0 +1,317 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Architectural Dark Canvas */
+  --canvas-bg: #0b0b0f;
+  --surface-bg: #121218;
+  --surface-elevated: #181822;
+  --surface-subtle: #1c1c28;
+
+  /* Hairline Precision Borders */
+  --border-color: rgba(244, 242, 232, 0.1);
+  --border-hover: rgba(244, 242, 232, 0.24);
+  --border-accent: rgba(0, 229, 255, 0.4);
+
+  /* High-Contrast Typographic Hierarchy */
+  --text-primary: #f4f2e8;
+  --text-secondary: #9c9cae;
+  --text-muted: #606072;
+
+  /* Singular Electric Cyan Accent (10% Rule) */
+  --accent: #00e5ff;
+  --accent-muted: rgba(0, 229, 255, 0.15);
+  --accent-glow: rgba(0, 229, 255, 0.08);
+  --accent-secondary: #ff2e88;
+
+  /* Code Surface */
+  --code-bg: #0e0e14;
+  --code-border: rgba(244, 242, 232, 0.08);
+
+  /* Typography */
+  --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-brand: 'Bungee', cursive, sans-serif;
+
+  /* Retro Cursors */
+  --cursor-default: url('/assets/cursors/win95-cursor.cur'), url('/assets/cursors/win95-cursor.png'), auto;
+  --cursor-pointer: url('/assets/cursors/win95-pointer.cur'), url('/assets/cursors/win95-pointer.png'), pointer;
+}
+
+/* Light Mode: Architectural Blueprint Paper */
+body.light-mode {
+  --canvas-bg: #f7f7f9;
+  --surface-bg: #ffffff;
+  --surface-elevated: #f0f0f4;
+  --surface-subtle: #e8e8ed;
+
+  --border-color: rgba(17, 17, 24, 0.1);
+  --border-hover: rgba(17, 17, 24, 0.25);
+  --border-accent: rgba(0, 136, 153, 0.4);
+
+  --text-primary: #111116;
+  --text-secondary: #525260;
+  --text-muted: #828292;
+
+  --accent: #008899;
+  --accent-muted: rgba(0, 136, 153, 0.12);
+  --accent-glow: rgba(0, 136, 153, 0.05);
+  --accent-secondary: #c91860;
+
+  --code-bg: #f0f0f4;
+  --code-border: rgba(17, 17, 24, 0.08);
+}
+
+/* Base Document */
+html {
+  cursor: var(--cursor-default);
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--canvas-bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.65;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  min-height: 100vh;
+}
+
+a, button, input[type="submit"], [role="button"] {
+  cursor: var(--cursor-pointer) !important;
+}
+
+/* Craft Floor: Themed Browser Surfaces */
+::selection {
+  background-color: var(--accent-secondary);
+  color: #ffffff;
+}
+
+* {
+  caret-color: var(--accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Status Pulse Dot */
+@keyframes pulse-subtle {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+.status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  animation: pulse-subtle 2.5s infinite ease-in-out;
+}
+
+/* Custom Tactical Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* MDXEditor Theme Integration */
+.mdx-editor-wrapper.dark-theme,
+body:not(.light-mode) .mdx-editor-wrapper {
+  --baseBase: var(--canvas-bg);
+  --baseSolid: var(--surface-bg);
+  --basePageBg: var(--surface-bg);
+  --accentBase: var(--surface-subtle);
+  --accentSolid: var(--accent);
+  --baseText: var(--text-primary);
+  --baseTextContrast: var(--canvas-bg);
+}
+
+.mdx-editor-wrapper.light-theme,
+body.light-mode .mdx-editor-wrapper {
+  --baseBase: var(--canvas-bg);
+  --baseSolid: var(--surface-bg);
+  --basePageBg: var(--surface-bg);
+  --accentBase: var(--surface-subtle);
+  --accentSolid: var(--accent);
+  --baseText: var(--text-primary);
+  --baseTextContrast: #ffffff;
+}
+
+/* Dynamic Prose Palette for Editor */
+body.light-mode .mdx-editor-wrapper .prose {
+  --tw-prose-body: var(--text-primary);
+  --tw-prose-headings: var(--text-primary);
+  --tw-prose-lead: var(--text-secondary);
+  --tw-prose-links: var(--accent);
+  --tw-prose-bold: var(--text-primary);
+  --tw-prose-counters: var(--text-muted);
+  --tw-prose-bullets: var(--text-muted);
+  --tw-prose-hr: var(--border-color);
+  --tw-prose-quotes: var(--text-secondary);
+  --tw-prose-quote-borders: var(--accent);
+  --tw-prose-code: var(--text-primary);
+  --tw-prose-pre-code: var(--text-primary);
+  --tw-prose-pre-bg: var(--code-bg);
+  --tw-prose-th-borders: var(--border-color);
+  --tw-prose-td-borders: var(--border-color);
+}
+
+body:not(.light-mode) .mdx-editor-wrapper .prose {
+  --tw-prose-invert-body: var(--text-primary);
+  --tw-prose-invert-headings: var(--text-primary);
+  --tw-prose-invert-lead: var(--text-secondary);
+  --tw-prose-invert-links: var(--accent);
+  --tw-prose-invert-bold: var(--text-primary);
+  --tw-prose-invert-counters: var(--text-muted);
+  --tw-prose-invert-bullets: var(--text-muted);
+  --tw-prose-invert-hr: var(--border-color);
+  --tw-prose-invert-quotes: var(--text-secondary);
+  --tw-prose-invert-quote-borders: var(--accent);
+  --tw-prose-invert-code: var(--text-primary);
+  --tw-prose-invert-pre-code: var(--text-primary);
+  --tw-prose-invert-pre-bg: var(--code-bg);
+  --tw-prose-invert-th-borders: var(--border-color);
+  --tw-prose-invert-td-borders: var(--border-color);
+}
+
+.mdx-editor-wrapper [role="toolbar"] {
+  background-color: var(--surface-subtle) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.mdx-editor-wrapper [role="toolbar"] button {
+  color: var(--text-secondary) !important;
+}
+
+.mdx-editor-wrapper [role="toolbar"] button:hover {
+  color: var(--accent) !important;
+  background-color: var(--accent-muted) !important;
+}
+
+.mdx-editor-wrapper [role="toolbar"] button[data-state="on"] {
+  color: var(--accent) !important;
+  background-color: var(--accent-muted) !important;
+}
+
+/* Toolbar Select / Combobox Trigger */
+.mdx-editor-wrapper [role="toolbar"] [role="combobox"],
+.mdx-editor-wrapper [role="toolbar"] button[data-radix-select-trigger],
+.mdx-editor-wrapper select {
+  background-color: var(--surface-bg) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 4px !important;
+  padding: 3px 8px !important;
+  font-family: var(--font-sans) !important;
+  font-size: 0.75rem !important;
+}
+
+/* CodeMirror Source / Code Block Inside Editor */
+.mdx-editor-wrapper .cm-editor {
+  background-color: var(--code-bg) !important;
+  color: var(--text-primary) !important;
+  font-family: var(--font-mono) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 4px !important;
+}
+
+.mdx-editor-wrapper .cm-editor .cm-scroller {
+  font-family: var(--font-mono) !important;
+  line-height: 1.6;
+}
+
+.mdx-editor-wrapper .cm-editor .cm-content {
+  color: var(--text-primary) !important;
+  caret-color: var(--accent) !important;
+}
+
+.mdx-editor-wrapper .cm-editor .cm-gutters {
+  background-color: var(--surface-subtle) !important;
+  color: var(--text-muted) !important;
+  border-right: 1px solid var(--border-color) !important;
+}
+
+.mdx-editor-wrapper .cm-editor .cm-activeLine {
+  background-color: var(--accent-glow) !important;
+}
+
+.mdx-editor-wrapper .cm-editor .cm-activeLineGutter {
+  background-color: var(--accent-muted) !important;
+  color: var(--text-primary) !important;
+}
+
+/* MDXEditor Floating Menus & Radix Portals */
+.mdx-editor-wrapper [role="dialog"],
+.mdx-editor-wrapper [role="listbox"],
+[data-radix-popper-content-wrapper] [role="menu"],
+[data-radix-popper-content-wrapper] [role="listbox"],
+[data-radix-popper-content-wrapper] [role="dialog"] {
+  background-color: var(--surface-elevated) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 8px 24px var(--border-color), 0 2px 6px var(--border-color) !important;
+}
+
+[data-radix-popper-content-wrapper] [role="option"],
+[data-radix-popper-content-wrapper] [role="menuitem"] {
+  color: var(--text-secondary) !important;
+  padding: 6px 12px !important;
+  font-size: 0.85rem !important;
+  font-family: var(--font-sans) !important;
+  cursor: pointer !important;
+  border-radius: 4px !important;
+}
+
+[data-radix-popper-content-wrapper] [role="option"]:hover,
+[data-radix-popper-content-wrapper] [role="menuitem"]:hover,
+[data-radix-popper-content-wrapper] [role="option"][data-highlighted],
+[data-radix-popper-content-wrapper] [role="menuitem"][data-highlighted] {
+  background-color: var(--accent-muted) !important;
+  color: var(--accent) !important;
+}
+
+/* Floating Dialog Inputs & Action Buttons */
+.mdx-editor-wrapper [role="dialog"] input,
+[data-radix-popper-content-wrapper] input {
+  background-color: var(--surface-subtle) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  border-radius: 4px !important;
+  padding: 6px 10px !important;
+  font-size: 0.85rem !important;
+  outline: none !important;
+}
+
+.mdx-editor-wrapper [role="dialog"] input:focus,
+[data-radix-popper-content-wrapper] input:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 1px var(--accent) !important;
+}
+
+.mdx-editor-wrapper [role="dialog"] button,
+[data-radix-popper-content-wrapper] button {
+  border-radius: 4px !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.75rem !important;
+}

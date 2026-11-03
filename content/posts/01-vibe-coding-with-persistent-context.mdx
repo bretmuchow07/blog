@@ -1,0 +1,86 @@
+---
+title: "The Vibe Coder's Guide: Transforming AI Agents with Persistent Context"
+description: "Why structured .md files like SECURITY.md, CODE_STYLE.md, and ARCHITECTURE.md turn AI coding tools from chaotic autocomplete into senior pair programmers."
+pubDate: "2026-11-01"
+author: "Bret Muchoni"
+tags: ["AI", "Architecture", "Engineering", "NextJs"]
+series: "Tactical Workflows"
+featured: true
+draft: false
+---
+
+# The Vibe Coder's Guide to Persistent Context
+
+AI coding models can generate high-velocity boilerplate in seconds, but without persistent, disciplined context, they stumble on project conventions, hallucinate dependencies, and weaken existing security controls.
+
+When building applications—like this very blog operating at `blog.bretmuchoni.dev`—relying solely on chat prompts creates cognitive fatigue. Instead, anchoring your project with structured Markdown documentation establishes persistent ground truth for both humans and AI coding agents.
+
+---
+
+## 1. The Core Context Suite
+
+Rather than overloading an AI agent's initial prompt with endless instructions, structure your repository with a dedicated `docs/` suite:
+
+```text
+my-app/
+├── docs/
+│   ├── AGENTS.md        # AI agent instructions & pre-flight rules
+│   ├── PRD.md           # Product requirements & user stories
+│   ├── DESIGN_SYSTEM.md # Visual tokens, palettes, and typography
+│   ├── ARCHITECTURE.md  # Framework boundaries & rendering strategy
+│   ├── SECURITY.md      # Authentication, secrets & input sanitization
+│   ├── CODE_STYLE.md    # Conventions, naming & testing rules
+│   ├── DATABASE.md      # Data schemas, models & migration rules
+│   └── API.md           # Endpoints, feeds & communication formats
+```
+
+Each file has a single, well-defined responsibility. For example, `DATABASE.md` defines how data is modeled, while `SECURITY.md` enforces how that data is protected.
+
+---
+
+## 2. Why Vibe Coding Needs Guardrails
+
+Consider what happens when an AI assistant encounters a new feature request without project documentation:
+
+1. **Token Inconsistency:** It invents random hex colors or rounded UI utilities instead of adhering to your design system.
+2. **Architecture Drift:** It introduces new third-party libraries when built-in utilities already exist.
+3. **Security Degradation:** It might bypass server-side validation or expose sensitive environment variables on the client.
+
+### Guardrails in Action: `AGENTS.md`
+
+Your `docs/AGENTS.md` acts as an executive brief for the AI assistant before it begins modifying code:
+
+```markdown
+Before implementing any changes:
+1. Read docs/SECURITY.md
+2. Read docs/CODE_STYLE.md
+3. Read docs/DESIGN_SYSTEM.md
+4. Inspect existing implementation before introducing new patterns
+```
+
+---
+
+## 3. Real Example: Enforcing Design System Tokens
+
+In this tactical blog, the visual identity blends a 90s tactical anime HUD with Pop Art aesthetics. When instructed to follow `docs/DESIGN_SYSTEM.md`, the AI agent knows never to use soft modern radii or arbitrary inline styles:
+
+```tsx
+// Compliant Tactical Button with Design Tokens
+export function TacticalButton({ label }: { label: string }) {
+  return (
+    <button className="tactile-btn px-4 py-2 font-mono text-xs uppercase border-2 border-[var(--panel-border-color)] bg-[var(--panel-surface)] text-[var(--cyan)] shadow-[var(--hard-shadow)] hover:border-[var(--magenta)]">
+      {label}
+    </button>
+  );
+}
+```
+
+---
+
+## 4. The Golden Rule of Project Context
+
+> **These files are context, not magic.**
+
+Document the project you *actually have*, not the hypothetical project you once intended to build. Keep each file concise, accurate, and synchronized whenever you make substantial architectural decisions.
+
+With persistent context in place, AI coding shifts from frustrating corrections to seamless, high-velocity collaboration.

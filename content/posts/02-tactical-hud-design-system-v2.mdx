@@ -1,0 +1,57 @@
+---
+title: "Tactical HUD v2.2: Blending Pop Art with 90s Anime UI"
+description: "How we engineered a distinctive web design system combining chamfered panels, Ben-Day halftone dithering, caution tickers, and authentic Win95 cursors."
+pubDate: "2026-10-30"
+author: "Bret Muchoni"
+tags: ["Design", "CSS", "Architecture", "Web"]
+series: "Tactical Workflows"
+featured: false
+draft: false
+---
+
+# Tactical HUD v2.2: Pop Art Meets 90s Anime UI
+
+Most modern developer blogs look identical: interchangeable minimalism, rounded pastel cards, and sterile sans-serif fonts.
+
+For `bretmuchoni.dev` and its companion publication `blog.bretmuchoni.dev`, we wanted something deliberate, tactile, and expressive—a synthesis of late-90s tactical anime terminal HUDs and comic Pop Art.
+
+---
+
+## 1. Core Architectural Pillars
+
+The design system operates on five visual pillars:
+
+1. **Hard Outlines & Chamfered Geometry:** Content sits inside solid 2px borders with 45° corner cuts.
+2. **Selective Halftone & Dithering:** Bayer dithering and Ben-Day dots provide tactile micro-textures without cluttering typography.
+3. **Restrained High-Chroma Accents:** Acid-yellow (`#f5ff00`) is strictly reserved for single-instance status beacons and build telemetry.
+4. **Mechanical Motion:** Buttons and cards exhibit low-latency tactile presses into hard drop shadows (`4px 4px 0 var(--magenta)`).
+5. **Authentic Web 1.0 Heritage:** Custom pixel cursors (`win95-cursor`, `win95-pointer`) and micro stamp badges celebrate the tactile era of early web software.
+
+---
+
+## 2. Implementing Chamfered Panels in CSS
+
+Modern CSS clip-paths allow us to generate precise 45° cuts without image sprites:
+
+```css
+.chamfer-panel {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    100% 14px,
+    100% 100%,
+    0 100%
+  );
+}
+```
+
+---
+
+## 3. High-Contrast Accessibility (WCAG AAA)
+
+Despite the bold chromatic palette, all primary text passes WCAG AAA contrast ratios:
+- Canvas background: `#0d0d12` (deep void)
+- Off-white paper text: `#f4f2e8` (yielding a >15:1 contrast ratio)
+- Cyan accents: `#00e5ff` (providing clear focus rings and interactive states)
+
+The result is an engineered, tactile reading surface built for clarity and impact.
