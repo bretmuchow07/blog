@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
 
   let password = '';
   try {
-    const body = await req.json();
+    const body = (await req.json()) as { password?: unknown };
     if (typeof body?.password === 'string') {
       password = body.password;
     }

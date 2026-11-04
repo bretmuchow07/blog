@@ -82,13 +82,13 @@ export default function PostForm({ initialValues = {}, action }: PostFormProps) 
         );
 
         if (!res.ok) {
-          const data = await res.json();
+          const data = (await res.json()) as { error?: string };
           setError(data.error ?? 'Something went wrong while saving.');
           return;
         }
 
-        const data = await res.json();
-        setCurrentDraft(data.draft);
+        const data = (await res.json()) as { id?: string; draft?: boolean };
+        setCurrentDraft(Boolean(data.draft));
         setSuccessMessage(
           asDraft
             ? action === 'update' && !currentDraft

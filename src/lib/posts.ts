@@ -1,6 +1,6 @@
-import { eq, and, desc, sql, asc } from 'drizzle-orm';
+import { eq, and, desc, sql, asc, like } from 'drizzle-orm';
 import readingTime from 'reading-time';
-import { db } from '@/db';
+import { getDb } from '@/db';
 import { posts, type Post, type NewPost } from '@/db/schema';
 import type { PostWithTags } from '@/lib/types';
 
@@ -52,6 +52,7 @@ function logDbError(context: string, error: unknown) {
 
 export async function getAllPosts(): Promise<PostWithTags[]> {
   try {
+    const db = await getDb();
     const rows = await db
       .select()
       .from(posts)
@@ -69,6 +70,7 @@ export async function getPostBySlug(
   includeDrafts: boolean = false
 ): Promise<PostWithTags | null> {
   try {
+    const db = await getDb();
     const conditions = [eq(posts.slug, slug)];
     if (!includeDrafts) {
       conditions.push(eq(posts.draft, false));
@@ -88,6 +90,7 @@ export async function getPostBySlug(
 
 export async function getAllTags(): Promise<string[]> {
   try {
+    const db = await getDb();
     const rows = await db
       .select({ tags: posts.tags })
       .from(posts)
@@ -108,15 +111,18 @@ export async function getAllTags(): Promise<string[]> {
 
 export async function getPostsByTag(tag: string): Promise<PostWithTags[]> {
   try {
-    // Postgres JSON containment: tags JSON array contains the given string
+    const db = await getDb();
     const rows = await db
       .select()
       .from(posts)
       .where(
-        sql`${posts.draft} = false AND ${posts.tags}::jsonb ? ${tag}`
+        and(
+          eq(posts.draft, false),
+          like(posts.tags, `%"${tag}"%`)
+        )
       )
       .orderBy(desc(posts.pub_date));
-    return rows.map(hydrate);
+    return rows.map(hydrate).filter((post) => post.tags.includes(tag));
   } catch (error) {
     logDbError(`[getPostsByTag] Database query failed for tag "${tag}"`, error);
     return [];
@@ -126,6 +132,7 @@ export async function getPostsByTag(tag: string): Promise<PostWithTags[]> {
 // Admin: fetch all posts regardless of draft status
 export async function getAllPostsAdmin(): Promise<PostWithTags[]> {
   try {
+    const db = await getDb();
     const rows = await db
       .select()
       .from(posts)
@@ -139,6 +146,7 @@ export async function getAllPostsAdmin(): Promise<PostWithTags[]> {
 
 export async function getPostById(id: string): Promise<PostWithTags | null> {
   try {
+    const db = await getDb();
     const row = await db
       .select()
       .from(posts)
@@ -165,6 +173,7 @@ export interface PostInput {
 }
 
 export async function createPost(data: PostInput): Promise<PostWithTags> {
+  const db = await getDb();
   const newPost: NewPost = {
     ...data,
     tags: JSON.stringify(data.tags),
@@ -181,6 +190,7 @@ export async function updatePost(
   id: string,
   data: Partial<PostInput>
 ): Promise<PostWithTags> {
+  const db = await getDb();
   const patch: Partial<NewPost> = {
     ...data,
     tags: data.tags !== undefined ? JSON.stringify(data.tags) : undefined,
@@ -195,6 +205,7 @@ export async function updatePost(
 }
 
 export async function publishPost(id: string): Promise<void> {
+  const db = await getDb();
   await db
     .update(posts)
     .set({ draft: false, pub_date: new Date(), updated_at: new Date() })
@@ -202,6 +213,7 @@ export async function publishPost(id: string): Promise<void> {
 }
 
 export async function unpublishPost(id: string): Promise<void> {
+  const db = await getDb();
   await db
     .update(posts)
     .set({ draft: true, pub_date: null, updated_at: new Date() })
@@ -209,5 +221,6 @@ export async function unpublishPost(id: string): Promise<void> {
 }
 
 export async function deletePost(id: string): Promise<void> {
+  const db = await getDb();
   await db.delete(posts).where(eq(posts.id, id));
 }

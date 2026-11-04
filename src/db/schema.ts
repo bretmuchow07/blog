@@ -1,17 +1,16 @@
 import {
-  pgTable,
+  sqliteTable,
   text,
-  boolean,
-  timestamp,
+  integer,
   index,
   uniqueIndex,
-} from 'drizzle-orm/pg-core';
+} from 'drizzle-orm/sqlite-core';
 
 // ─── posts ────────────────────────────────────────────────────────────────────
 // Central content table. All blog articles live here.
 // tags column stores a JSON-encoded string array: '["tag1","tag2"]'
 // ─────────────────────────────────────────────────────────────────────────────
-export const posts = pgTable(
+export const posts = sqliteTable(
   'posts',
   {
     id: text('id')
@@ -31,19 +30,19 @@ export const posts = pgTable(
     // Optional series grouping (e.g. "Vibe Coding Series")
     series: text('series'),
 
-    featured: boolean('featured').notNull().default(false),
-    draft: boolean('draft').notNull().default(true),
+    featured: integer('featured', { mode: 'boolean' }).notNull().default(false),
+    draft: integer('draft', { mode: 'boolean' }).notNull().default(true),
 
-    // Null until explicitly published
-    pub_date: timestamp('pub_date', { withTimezone: true }),
+    // Null until explicitly published (stored as unix timestamp)
+    pub_date: integer('pub_date', { mode: 'timestamp' }),
 
-    created_at: timestamp('created_at', { withTimezone: true })
+    created_at: integer('created_at', { mode: 'timestamp' })
       .notNull()
-      .defaultNow(),
+      .$defaultFn(() => new Date()),
 
-    updated_at: timestamp('updated_at', { withTimezone: true })
+    updated_at: integer('updated_at', { mode: 'timestamp' })
       .notNull()
-      .defaultNow(),
+      .$defaultFn(() => new Date()),
   },
   (table) => [
     uniqueIndex('posts_slug_idx').on(table.slug),
