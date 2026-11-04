@@ -11,7 +11,15 @@ export default function CodeBlock({ children, ...props }: CodeBlockProps) {
   const [copied, setCopied] = useState<boolean>(false);
 
   const handleCopy = () => {
-    const codeString = typeof children === 'string' ? children : (props as any)['data-code'] || '';
+    let codeString = '';
+    if (typeof children === 'string') {
+      codeString = children;
+    } else if (React.isValidElement(children) && (children.props as any)?.children) {
+      const inner = (children.props as any).children;
+      codeString = typeof inner === 'string' ? inner : String(inner || '');
+    } else {
+      codeString = (props as any)['data-code'] || '';
+    }
 
     if (codeString) {
       navigator.clipboard.writeText(codeString);

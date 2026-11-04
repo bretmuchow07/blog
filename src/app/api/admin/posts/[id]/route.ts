@@ -4,12 +4,17 @@ import { isAuthenticated } from '@/lib/auth';
 import { z } from 'zod';
 
 const PatchSchema = z.object({
-  slug: z.string().optional(),
-  title: z.string().optional(),
-  description: z.string().optional(),
+  slug: z
+    .string()
+    .min(1)
+    .max(120)
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be lowercase alphanumeric with hyphens')
+    .optional(),
+  title: z.string().min(1).max(200).optional(),
+  description: z.string().min(1).max(500).optional(),
   content: z.string().optional(),
-  tags: z.array(z.string()).optional(),
-  series: z.string().optional(),
+  tags: z.array(z.string().min(1).max(50)).optional(),
+  series: z.string().max(100).optional(),
   featured: z.boolean().optional(),
   draft: z.boolean().optional(),
 });

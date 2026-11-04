@@ -6,7 +6,7 @@ import { getPostBySlug, getAllPosts } from '@/lib/posts';
 import { isAuthenticated } from '@/lib/auth';
 import ReadingProgress from '@/components/blog/ReadingProgress';
 import CodeBlock from '@/components/blog/CodeBlock';
-import { MDXRemote } from 'next-mdx-remote/rsc';
+import Markdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
@@ -68,56 +68,58 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
   };
 }
 
-const mdxComponents = {
-  pre: (props: any) => <CodeBlock {...props} />,
-  h1: (props: any) => (
+const markdownComponents: Components = {
+  pre: ({ node, ...props }: any) => <CodeBlock {...props} />,
+  h1: ({ node, ...props }: any) => (
     <h1
       className="font-sans font-bold text-2xl sm:text-3xl text-[var(--text-primary)] mt-12 mb-4 tracking-tight"
       {...props}
     />
   ),
-  h2: (props: any) => (
+  h2: ({ node, ...props }: any) => (
     <h2
       className="font-sans font-bold text-xl sm:text-2xl text-[var(--text-primary)] mt-10 mb-3 tracking-tight"
       {...props}
     />
   ),
-  h3: (props: any) => (
+  h3: ({ node, ...props }: any) => (
     <h3
       className="font-sans font-semibold text-lg text-[var(--text-primary)] mt-8 mb-2"
       {...props}
     />
   ),
-  p: (props: any) => (
+  p: ({ node, ...props }: any) => (
     <p
       className="font-sans text-base text-[var(--text-secondary)] leading-relaxed mb-6"
       {...props}
     />
   ),
-  ul: (props: any) => (
+  ul: ({ node, ...props }: any) => (
     <ul className="list-disc list-outside pl-5 space-y-2 mb-6 text-[var(--text-secondary)]" {...props} />
   ),
-  ol: (props: any) => (
+  ol: ({ node, ...props }: any) => (
     <ol className="list-decimal list-outside pl-5 space-y-2 mb-6 text-[var(--text-secondary)]" {...props} />
   ),
-  blockquote: (props: any) => (
+  blockquote: ({ node, ...props }: any) => (
     <div className="my-6 p-4 rounded-md border border-[var(--border-color)] bg-[var(--surface-bg)] text-[var(--text-primary)] font-sans italic text-sm leading-relaxed">
       <blockquote {...props} />
     </div>
   ),
-  table: (props: any) => (
+  table: ({ node, ...props }: any) => (
     <div className="overflow-x-auto my-6 border border-[var(--border-color)] rounded-md">
       <table className="w-full text-left font-mono text-xs border-collapse" {...props} />
     </div>
   ),
-  th: (props: any) => (
+  th: ({ node, ...props }: any) => (
     <th className="p-3 bg-[var(--surface-subtle)] border-b border-[var(--border-color)] text-[var(--text-primary)] font-semibold" {...props} />
   ),
-  td: (props: any) => (
+  td: ({ node, ...props }: any) => (
     <td className="p-3 border-b border-[var(--border-color)] text-[var(--text-secondary)]" {...props} />
   ),
-  a: ({ href, children, ...props }: any) => {
-    const isExternal = typeof href === 'string' && (href.startsWith('http://') || href.startsWith('https://'));
+  a: ({ node, href, children, ...props }: any) => {
+    const isExternal =
+      typeof href === 'string' &&
+      (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('//'));
     return (
       <a
         href={href}
@@ -130,7 +132,7 @@ const mdxComponents = {
     );
   },
   hr: () => <hr className="my-10 border-[var(--border-color)]" />,
-  img: ({ src, alt, ...props }: any) => (
+  img: ({ node, src, alt, ...props }: any) => (
     <figure className="my-8 space-y-2.5">
       <div className="overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--surface-subtle)]">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -149,7 +151,7 @@ const mdxComponents = {
       )}
     </figure>
   ),
-  code: ({ className, children, ...props }: any) => {
+  code: ({ node, className, children, ...props }: any) => {
     if (className?.startsWith('language-')) {
       return (
         <code className={className} {...props}>
@@ -261,34 +263,31 @@ export default async function PostPage({ params }: PostPageProps) {
 
       {/* Article Body */}
       <section className="py-2">
-        <MDXRemote
-          source={post.content}
-          components={mdxComponents}
-          options={{
-            mdxOptions: {
-              remarkPlugins: [remarkGfm],
-              rehypePlugins: [
-                rehypeSlug,
-                [
-                  rehypeSanitize,
-                  {
-                    ...defaultSchema,
-                    attributes: {
-                      ...defaultSchema.attributes,
-                      h1: [...(defaultSchema.attributes?.h1 || []), 'id'],
-                      h2: [...(defaultSchema.attributes?.h2 || []), 'id'],
-                      h3: [...(defaultSchema.attributes?.h3 || []), 'id'],
-                      h4: [...(defaultSchema.attributes?.h4 || []), 'id'],
-                      code: [...(defaultSchema.attributes?.code || []), 'className'],
-                      span: [...(defaultSchema.attributes?.span || []), 'className'],
-                    },
-                  },
-                ],
-                [rehypeAutolinkHeadings, { behavior: 'wrap' }],
-              ],
-            },
-          }}
-        />
+        <Markdown
+          components={markdownComponents}
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[
+            rehypeSlug,
+            [
+              rehypeSanitize,
+              {
+                ...defaultSchema,
+                attributes: {
+                  ...defaultSchema.attributes,
+                  h1: [...(defaultSchema.attributes?.h1 || []), 'id'],
+                  h2: [...(defaultSchema.attributes?.h2 || []), 'id'],
+                  h3: [...(defaultSchema.attributes?.h3 || []), 'id'],
+                  h4: [...(defaultSchema.attributes?.h4 || []), 'id'],
+                  code: [...(defaultSchema.attributes?.code || []), 'className'],
+                  span: [...(defaultSchema.attributes?.span || []), 'className'],
+                },
+              },
+            ],
+            [rehypeAutolinkHeadings, { behavior: 'wrap' }],
+          ]}
+        >
+          {post.content}
+        </Markdown>
       </section>
 
       {/* Prev / Next Navigation */}

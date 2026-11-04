@@ -9,9 +9,11 @@ const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
 const LOCKOUT_DELAY_MS = 1200; // 1.2s delay on failed attempts to throttle attackers
 
 function getClientIp(req: NextRequest): string {
+  // In Cloudflare Workers/Edge, cf-connecting-ip is trusted and cannot be spoofed by the client
   return (
-    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    req.headers.get('cf-connecting-ip') ||
     req.headers.get('x-real-ip') ||
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
     '127.0.0.1'
   );
 }

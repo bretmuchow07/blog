@@ -6,7 +6,6 @@ const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 function getSessionSecret(): string | null {
   return (
     process.env.ADMIN_SESSION_SECRET ||
-    process.env.ADMIN_SESSION_TOKEN ||
     process.env.ADMIN_PASSWORD ||
     null
   );
@@ -64,12 +63,7 @@ export function verifySessionToken(token: string): boolean {
     return timingSafeCompare(receivedSig, expectedSig);
   }
 
-  // Fallback: check static token if configured (legacy compatibility during rotation)
-  const legacySecret = process.env.ADMIN_SESSION_TOKEN || process.env.ADMIN_PASSWORD;
-  if (legacySecret && timingSafeCompare(token, legacySecret)) {
-    return true;
-  }
-
+  // Reject invalid formats or legacy unexpiring static tokens
   return false;
 }
 

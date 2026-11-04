@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST() {
-  const response = NextResponse.redirect(new URL('/admin/login', process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'));
+export async function POST(req: NextRequest) {
+  const redirectUrl = new URL('/admin/login', req.nextUrl.origin);
+  const response = NextResponse.redirect(redirectUrl);
   response.cookies.set('__blog_session', '', {
     httpOnly: true,
     sameSite: 'strict',

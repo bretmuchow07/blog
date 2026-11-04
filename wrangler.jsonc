@@ -14,7 +14,8 @@
     {
       "binding": "DB",
       "database_name": "blog-db",
-      "database_id": "4ee5e62a-61b7-4815-8aae-56a8830c21cb"
+      "database_id": "4ee5e62a-61b7-4815-8aae-56a8830c21cb",
+      "migrations_dir": "drizzle/migrations"
     }
   ],
   "services": [
