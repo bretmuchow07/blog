@@ -8,6 +8,8 @@ interface EditPostPageProps {
   params: Promise<{ id: string }>;
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }: EditPostPageProps) {
   const { id } = await params;
   const post = await getPostById(id);
@@ -24,7 +26,7 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
     <div className="space-y-8">
       <div className="flex items-center justify-between pb-6 border-b border-[var(--border-color)]">
         <div>
-          <h1 className="text-2xl font-sans font-bold text-[var(--text-primary)] tracking-tight">
+          <h1 className="text-3xl font-sans font-bold text-[var(--text-primary)] tracking-tight">
             Edit Article
           </h1>
           <p className="text-sm font-mono text-[var(--text-muted)] mt-1">
@@ -36,13 +38,14 @@ export default async function EditPostPage({ params }: EditPostPageProps) {
             href={`/posts/${post.slug}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md font-mono text-xs border border-[var(--border-accent)] bg-[var(--accent-muted)] text-[var(--accent)] hover:underline"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm font-mono text-xs border border-[var(--border-accent)] bg-[var(--accent)]/5 text-[var(--accent)] hover:bg-[var(--accent)]/10 transition-colors"
           >
-            <span>View live</span>
+            <span>View live article</span>
             <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         )}
       </div>
+
       <PostForm
         action="update"
         initialValues={{
