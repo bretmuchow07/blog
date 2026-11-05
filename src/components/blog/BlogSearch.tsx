@@ -41,8 +41,8 @@ export default function BlogSearch({ initialPosts, availableTags }: BlogSearchPr
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search articles by title, topic, or keyword..."
-          className="w-full pl-10 pr-10 py-2.5 rounded bg-[var(--surface-bg)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] focus:outline-none transition-colors"
+          placeholder="Filter by title, topic, or keyword..."
+          className="w-full pl-10 pr-10 py-2.5 rounded-sm bg-[var(--surface-bg)] border border-[var(--border-color)] text-[var(--text-primary)] text-sm placeholder:text-[var(--text-muted)] focus:border-[var(--accent)] focus-visible:outline-2 focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2 transition-colors"
         />
         {query && (
           <button
@@ -55,18 +55,23 @@ export default function BlogSearch({ initialPosts, availableTags }: BlogSearchPr
         )}
       </div>
 
-      {/* Topic Filter Pills */}
+      {/* Topic Filter Pills with Topic Dots */}
       {availableTags.length > 0 && (
         <div className="flex flex-wrap items-center gap-1.5 pt-1">
           <button
             onClick={() => setSelectedTag(null)}
-            className={`px-3 py-1 rounded text-xs font-mono transition-colors ${
+            className={`px-3 py-1 rounded-sm text-xs font-mono transition-colors flex items-center gap-1.5 ${
               selectedTag === null
                 ? 'bg-[var(--text-primary)] text-[var(--canvas-bg)] font-semibold'
                 : 'bg-[var(--surface-bg)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:border-[var(--border-hover)]'
             }`}
           >
-            All ({initialPosts.length})
+            <span
+              className={`topic-dot ${
+                selectedTag === null ? 'bg-[var(--canvas-bg)]' : 'bg-[var(--accent)]'
+              }`}
+            />
+            <span>All ({initialPosts.length})</span>
           </button>
 
           {availableTags.map((tag) => {
@@ -75,13 +80,18 @@ export default function BlogSearch({ initialPosts, availableTags }: BlogSearchPr
               <button
                 key={tag}
                 onClick={() => setSelectedTag(isSelected ? null : tag)}
-                className={`px-3 py-1 rounded text-xs font-mono transition-colors ${
+                className={`px-3 py-1 rounded-sm text-xs font-mono transition-colors flex items-center gap-1.5 ${
                   isSelected
                     ? 'bg-[var(--text-primary)] text-[var(--canvas-bg)] font-semibold'
                     : 'bg-[var(--surface-bg)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:border-[var(--border-hover)]'
                 }`}
               >
-                {tag}
+                <span
+                  className={`topic-dot ${
+                    isSelected ? 'bg-[var(--canvas-bg)]' : 'bg-[var(--accent-magenta)]'
+                  }`}
+                />
+                <span>{tag}</span>
               </button>
             );
           })}
@@ -89,11 +99,11 @@ export default function BlogSearch({ initialPosts, availableTags }: BlogSearchPr
       )}
 
       {/* Articles List */}
-      <div className="pt-2">
+      <div className="pt-2 divide-y divide-[var(--border-color)]">
         {filteredPosts.length > 0 ? (
           <div>
-            {filteredPosts.map((post) => (
-              <PostCard key={post.slug} post={post} />
+            {filteredPosts.map((post, idx) => (
+              <PostCard key={post.slug} post={post} index={idx} />
             ))}
           </div>
         ) : (

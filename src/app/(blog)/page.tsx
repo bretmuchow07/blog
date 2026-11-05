@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { getAllPosts, getAllTags } from '@/lib/posts';
 import BlogSearch from '@/components/blog/BlogSearch';
+import StatusBadge from '@/components/ui/StatusBadge';
 import { ArrowUpRight } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -22,42 +23,48 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-12">
-      {/* Architectural Masthead */}
-      <header className="space-y-4 pb-8 border-b border-[var(--border-color)]">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-2 max-w-xl">
-            <h1 className="text-4xl sm:text-5xl font-sans font-bold text-[var(--text-primary)] tracking-tight">
-              Writing
-            </h1>
-            <p className="text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed">
-              Articles, notes, and essays on software, design, and whatever else is on my mind.
-            </p>
-          </div>
+      {/* Masthead with Blueprint Dot-Grid */}
+      <header className="relative pt-8 sm:pt-12 pb-10 border-b border-[var(--border-color)] overflow-hidden">
+        {/* Faint Dot-Grid Background that fades toward bottom edge */}
+        <div
+          className="absolute inset-0 bg-dot-grid pointer-events-none -z-10 [mask-image:linear-gradient(to_bottom,black_40%,transparent_100%)]"
+          aria-hidden="true"
+        />
+
+        <div className="space-y-3 max-w-2xl">
+          <h1 className="font-display text-4xl sm:text-6xl text-[var(--text-primary)] tracking-tight leading-[1.05]">
+            BRET&apos;S CORNER
+          </h1>
+          <p className="font-sans text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed">
+            Articles, notes, and essays on software architecture, design, and ideas.
+          </p>
         </div>
       </header>
 
       {/* Featured Spotlight Card */}
       {featuredPost && (
         <section className="space-y-3">
-          <div className="text-xs font-mono text-[var(--text-muted)] tracking-wider uppercase flex items-center gap-2">
-            <span className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full" />
-            <span>Featured Article</span>
-          </div>
-
           <article className="group relative p-6 sm:p-8 rounded-lg bg-[var(--surface-bg)] border border-[var(--border-color)] hover:border-[var(--border-accent)] transition-all">
             <div className="space-y-3">
-              <div className="flex items-center gap-3 text-xs font-mono text-[var(--text-muted)]">
+              {/* Header Strip with PINNED Micro-Stamp & Metadata */}
+              <div className="flex items-center gap-3 text-xs font-mono text-[var(--text-muted)] flex-wrap">
+                <StatusBadge type="PINNED" />
+
+                <span className="topic-dot bg-[var(--accent)] ml-1" />
+
                 {featuredPost.pub_date && (
                   <time dateTime={new Date(featuredPost.pub_date).toISOString()}>
                     {featuredDate}
                   </time>
                 )}
+
                 {featuredPost.readingTime && (
                   <>
                     <span>•</span>
                     <span>{featuredPost.readingTime}</span>
                   </>
                 )}
+
                 {featuredPost.series && (
                   <>
                     <span>•</span>
@@ -66,24 +73,30 @@ export default async function HomePage() {
                 )}
               </div>
 
+              {/* Title & Link */}
               <h2 className="text-2xl sm:text-3xl font-sans font-bold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors leading-tight">
-                <Link href={`/posts/${featuredPost.slug}`} className="focus:outline-none flex items-center justify-between gap-4">
+                <Link
+                  href={`/posts/${featuredPost.slug}`}
+                  className="focus-visible:outline-2 focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2 rounded-sm flex items-center justify-between gap-4"
+                >
                   <span>{featuredPost.title}</span>
-                  <ArrowUpRight className="w-5 h-5 text-[var(--text-muted)] group-hover:text-[var(--accent)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all flex-shrink-0" />
+                  <ArrowUpRight className="w-5 h-5 text-[var(--text-muted)] group-hover:text-[var(--accent)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
                 </Link>
               </h2>
 
-              <p className="text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed line-clamp-2 max-w-2xl">
+              {/* Summary */}
+              <p className="text-sm sm:text-base font-sans text-[var(--text-secondary)] leading-relaxed line-clamp-2 max-w-2xl">
                 {featuredPost.description}
               </p>
 
+              {/* Tags */}
               {featuredPost.tags.length > 0 && (
                 <div className="pt-2 flex flex-wrap gap-2">
                   {featuredPost.tags.map((tag) => (
                     <Link
                       key={tag}
                       href={`/tags/${encodeURIComponent(tag.toLowerCase())}`}
-                      className="px-2.5 py-0.5 rounded text-xs font-mono bg-[var(--surface-subtle)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+                      className="px-2.5 py-0.5 rounded-sm text-xs font-mono bg-[var(--surface-subtle)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
                     >
                       #{tag}
                     </Link>
@@ -95,10 +108,10 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* Search & Remaining Articles */}
+      {/* Chronological Index & Live Search */}
       <section className="space-y-6">
         <div className="text-xs font-mono text-[var(--text-muted)] tracking-wider uppercase flex items-center justify-between border-b border-[var(--border-color)] pb-3">
-          <span>All Articles</span>
+          <span>Chronological Index</span>
           <span>{posts.length} entries</span>
         </div>
 

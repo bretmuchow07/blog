@@ -6,6 +6,7 @@ import { getPostBySlug, getAllPosts } from '@/lib/posts';
 import { isAuthenticated } from '@/lib/auth';
 import ReadingProgress from '@/components/blog/ReadingProgress';
 import CodeBlock from '@/components/blog/CodeBlock';
+import StatusBadge from '@/components/ui/StatusBadge';
 import Markdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
@@ -38,7 +39,6 @@ interface PostPageProps {
   params: Promise<{ slug: string }>;
 }
 
-// Dynamic — posts come from the DB at runtime, not built statically
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {
@@ -76,33 +76,60 @@ const markdownComponents: Components = {
       {...props}
     />
   ),
-  h2: ({ node, ...props }: any) => (
+  h2: ({ node, id, children, ...props }: any) => (
     <h2
-      className="font-sans font-bold text-xl sm:text-2xl text-[var(--text-primary)] mt-10 mb-3 tracking-tight"
+      id={id}
+      className="group font-sans font-bold text-xl sm:text-2xl text-[var(--text-primary)] mt-10 mb-3 tracking-tight flex items-baseline gap-2"
       {...props}
-    />
+    >
+      <span>{children}</span>
+      {id && (
+        <a
+          href={`#${id}`}
+          aria-label="Section permalink"
+          className="opacity-0 group-hover:opacity-100 focus:opacity-100 font-mono text-xs text-[var(--text-muted)] hover:text-[var(--accent)] transition-opacity"
+        >
+          #
+        </a>
+      )}
+    </h2>
   ),
-  h3: ({ node, ...props }: any) => (
+  h3: ({ node, id, children, ...props }: any) => (
     <h3
-      className="font-sans font-semibold text-lg text-[var(--text-primary)] mt-8 mb-2"
+      id={id}
+      className="group font-sans font-semibold text-lg text-[var(--text-primary)] mt-8 mb-2 flex items-baseline gap-2"
       {...props}
-    />
+    >
+      <span>{children}</span>
+      {id && (
+        <a
+          href={`#${id}`}
+          aria-label="Section permalink"
+          className="opacity-0 group-hover:opacity-100 focus:opacity-100 font-mono text-xs text-[var(--text-muted)] hover:text-[var(--accent)] transition-opacity"
+        >
+          #
+        </a>
+      )}
+    </h3>
   ),
   p: ({ node, ...props }: any) => (
     <p
-      className="font-sans text-base text-[var(--text-secondary)] leading-relaxed mb-6"
+      className="font-sans text-base text-[var(--text-primary)] leading-[1.7] mb-6"
       {...props}
     />
   ),
   ul: ({ node, ...props }: any) => (
-    <ul className="list-disc list-outside pl-5 space-y-2 mb-6 text-[var(--text-secondary)]" {...props} />
+    <ul className="list-disc list-outside pl-5 space-y-2 mb-6 text-[var(--text-primary)]" {...props} />
   ),
   ol: ({ node, ...props }: any) => (
-    <ol className="list-decimal list-outside pl-5 space-y-2 mb-6 text-[var(--text-secondary)]" {...props} />
+    <ol className="list-decimal list-outside pl-5 space-y-2 mb-6 text-[var(--text-primary)]" {...props} />
   ),
-  blockquote: ({ node, ...props }: any) => (
-    <div className="my-6 p-4 rounded-md border border-[var(--border-color)] bg-[var(--surface-bg)] text-[var(--text-primary)] font-sans italic text-sm leading-relaxed">
-      <blockquote {...props} />
+  // Pull-quote with large magenta opening quotation glyph and no vertical borders
+  blockquote: ({ node, children, ...props }: any) => (
+    <div className="pull-quote border-0 my-8">
+      <blockquote className="border-0 pl-0 italic font-sans text-lg sm:text-xl text-[var(--text-primary)] leading-relaxed" {...props}>
+        {children}
+      </blockquote>
     </div>
   ),
   table: ({ node, ...props }: any) => (
@@ -123,7 +150,7 @@ const markdownComponents: Components = {
     return (
       <a
         href={href}
-        className="text-[var(--accent)] hover:underline underline-offset-4 decoration-1 font-medium transition-colors"
+        className="text-[var(--accent)] hover:underline underline-offset-4 decoration-1 font-medium focus-visible:outline-2 focus-visible:outline-[var(--accent)] transition-colors"
         {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
         {...props}
       >
@@ -161,7 +188,7 @@ const markdownComponents: Components = {
     }
     return (
       <code
-        className="px-1.5 py-0.5 rounded font-mono text-[0.88em] bg-[var(--surface-subtle)] text-[var(--accent)] border border-[var(--border-color)]"
+        className="px-1.5 py-0.5 rounded-sm font-mono text-[0.88em] bg-[var(--surface-subtle)] text-[var(--accent)] border border-[var(--border-color)]"
         {...props}
       >
         {children}
@@ -191,13 +218,34 @@ export default async function PostPage({ params }: PostPageProps) {
       })
     : null;
 
+  const prevDate = prevPost?.pub_date
+    ? new Date(prevPost.pub_date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })
+    : null;
+
+  const nextDate = nextPost?.pub_date
+    ? new Date(nextPost.pub_date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })
+    : null;
+
+  const primaryTopic = post.tags?.[0] || post.series || 'Essay';
+
   return (
     <article className="max-w-3xl mx-auto space-y-10">
       <ReadingProgress />
 
       {post.draft && (
-        <div className="p-3 rounded-md border border-amber-500/30 bg-amber-500/10 text-amber-300 font-mono text-xs flex items-center justify-between">
-          <span>⚠️ Draft Preview — This article is not published.</span>
+        <div className="p-3 rounded-md border border-[var(--accent-yellow)]/40 bg-[var(--accent-yellow)]/10 text-[var(--accent-yellow)] font-mono text-xs flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <StatusBadge type="DRAFT" />
+            <span>Unpublished Draft Preview</span>
+          </div>
           <Link href={`/admin/posts/${post.id}/edit`} className="underline hover:text-white">
             Open in Editor →
           </Link>
@@ -208,7 +256,7 @@ export default async function PostPage({ params }: PostPageProps) {
       <div>
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-mono text-[var(--text-muted)] hover:text-[var(--text-primary)] focus-visible:outline-2 focus-visible:outline-[var(--accent)] rounded-sm transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>All articles</span>
@@ -217,16 +265,25 @@ export default async function PostPage({ params }: PostPageProps) {
 
       {/* Article Header */}
       <header className="space-y-4 pb-8 border-b border-[var(--border-color)]">
-        <div className="flex items-center gap-3 text-xs font-mono text-[var(--text-muted)]">
+        {/* Metadata Strip with Topic Dot */}
+        <div className="flex items-center gap-2.5 text-xs font-mono text-[var(--text-muted)] flex-wrap">
+          <span className="topic-dot bg-[var(--accent)]" />
+          <span className="text-[var(--text-secondary)] font-medium">{primaryTopic}</span>
+
           {formattedDate && (
-            <time dateTime={new Date(post.pub_date!).toISOString()}>{formattedDate}</time>
+            <>
+              <span>•</span>
+              <time dateTime={new Date(post.pub_date!).toISOString()}>{formattedDate}</time>
+            </>
           )}
+
           {post.readingTime && (
             <>
               <span>•</span>
               <span>{post.readingTime}</span>
             </>
           )}
+
           {post.series && (
             <>
               <span>•</span>
@@ -235,7 +292,7 @@ export default async function PostPage({ params }: PostPageProps) {
           )}
         </div>
 
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-sans font-bold text-[var(--text-primary)] tracking-tight leading-tight">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-sans font-bold text-[var(--text-primary)] tracking-tight leading-[1.15]">
           {post.title}
         </h1>
 
@@ -249,7 +306,7 @@ export default async function PostPage({ params }: PostPageProps) {
               <Link
                 key={tag}
                 href={`/tags/${encodeURIComponent(tag.toLowerCase())}`}
-                className="px-2.5 py-0.5 rounded text-xs font-mono bg-[var(--surface-subtle)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+                className="px-2.5 py-0.5 rounded-sm text-xs font-mono bg-[var(--surface-subtle)] text-[var(--text-secondary)] border border-[var(--border-color)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
               >
                 #{tag}
               </Link>
@@ -258,11 +315,11 @@ export default async function PostPage({ params }: PostPageProps) {
         )}
       </header>
 
-      {/* Table of Contents (for structured multi-heading articles) */}
+      {/* Table of Contents */}
       <TableOfContents headings={headings} />
 
-      {/* Article Body */}
-      <section className="py-2">
+      {/* Article Body — Quiet, High-Contrast Reading Column */}
+      <section className="py-2 text-[var(--text-primary)]">
         <Markdown
           components={markdownComponents}
           remarkPlugins={[remarkGfm]}
@@ -290,7 +347,7 @@ export default async function PostPage({ params }: PostPageProps) {
         </Markdown>
       </section>
 
-      {/* Prev / Next Navigation */}
+      {/* Sequential Post Navigation */}
       {(prevPost || nextPost) && (
         <section className="pt-8 border-t border-[var(--border-color)] grid grid-cols-1 sm:grid-cols-2 gap-4">
           {prevPost ? (
@@ -298,10 +355,13 @@ export default async function PostPage({ params }: PostPageProps) {
               href={`/posts/${prevPost.slug}`}
               className="p-4 rounded-md border border-[var(--border-color)] bg-[var(--surface-bg)] hover:border-[var(--border-hover)] transition-all group flex flex-col justify-between"
             >
-              <span className="text-xs font-mono text-[var(--text-muted)] flex items-center gap-1 mb-1">
-                <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
-                Previous Article
-              </span>
+              <div className="flex items-center justify-between text-xs font-mono text-[var(--text-muted)] mb-2">
+                <span className="flex items-center gap-1 group-hover:-translate-x-1 transition-transform">
+                  <ArrowLeft className="w-3 h-3" />
+                  Previous Article
+                </span>
+                {prevDate && <span>{prevDate}</span>}
+              </div>
               <span className="text-sm font-sans font-semibold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors line-clamp-2">
                 {prevPost.title}
               </span>
@@ -315,10 +375,13 @@ export default async function PostPage({ params }: PostPageProps) {
               href={`/posts/${nextPost.slug}`}
               className="p-4 rounded-md border border-[var(--border-color)] bg-[var(--surface-bg)] hover:border-[var(--border-hover)] transition-all group flex flex-col justify-between text-right"
             >
-              <span className="text-xs font-mono text-[var(--text-muted)] flex items-center justify-end gap-1 mb-1">
-                Next Article
-                <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-              </span>
+              <div className="flex items-center justify-between text-xs font-mono text-[var(--text-muted)] mb-2">
+                {nextDate && <span>{nextDate}</span>}
+                <span className="flex items-center gap-1 group-hover:translate-x-1 transition-transform ml-auto">
+                  Next Article
+                  <ArrowRight className="w-3 h-3" />
+                </span>
+              </div>
               <span className="text-sm font-sans font-semibold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors line-clamp-2">
                 {nextPost.title}
               </span>
@@ -329,13 +392,13 @@ export default async function PostPage({ params }: PostPageProps) {
         </section>
       )}
 
-      {/* Author Card Footer */}
+      {/* Footer Colophon Card */}
       <footer className="p-6 rounded-lg border border-[var(--border-color)] bg-[var(--surface-bg)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-mono text-[var(--text-muted)]">
         <div>
           <div className="font-semibold text-sm text-[var(--text-primary)] mb-0.5">
             Bret Muchoni
           </div>
-          <div>Software developer, writer &amp; builder. Publishing on tech, life, ideas, and whatever comes next.</div>
+          <div className="text-[var(--text-secondary)]">Software developer, writer &amp; builder.</div>
         </div>
 
         <div className="flex items-center gap-4">

@@ -8,46 +8,47 @@ web
 
 ## Users
 
-Curious minds, peers, technologists, designers, and readers seeking authentic essays, notes, and ideas across software, architecture, culture, design, and life.
+Developers, designers, technologists, and curious readers looking for well-written essays, notes, and observations on software, design, culture, and everyday ideas.
 
 ## Product Purpose
 
-`blog.bretmuchoni.dev` exists as Bret Muchoni's autonomous, versatile personal publication and digital garden companion to `bretmuchoni.dev`. It is not limited to engineering notes—it serves as an open medium to publish across any subject of interest (systems engineering, essays, culture, book notes, philosophy, creative writing, and life observations) with zero friction, zero tracking bloat, and an engaging tactical visual experience.
+`blog.bretmuchoni.dev` is Bret Muchoni's independent publication and personal notebook, companion to `bretmuchoni.dev`. It is not restricted to software engineering. It is an open space to publish essays, systems thinking, book notes, philosophy, creative writing, and personal reflections with fast loading speeds, zero ads, and zero tracking cookies.
 
 ## Positioning
 
-Unlike cookie-cutter, minimalist developer blogs with rounded pastel components and generic styling, this blog is deliberately tactile and engineered—synthesizing Pop Art comic panels with 90s tactical anime terminal HUDs while delivering instantaneous static performance.
+Unlike generic developer blogs with standard templates and pastel styling, this site is built with clean lines and purposeful structure: an uncluttered reading environment with subtle retro computer touches around the edges. Distinctive details (display fonts, pixel cursors, and small web badges) are used sparingly so the writing always remains the focus. Every page is pre-built to load immediately.
 
 ## Operating Context
 
-Technical reading across mobile, tablet, and widescreen desktop monitors; offline or low-connectivity reading via RSS readers; cross-navigation to and from Bret's main portfolio.
+Comfortable reading across mobile phones, tablets, and widescreen desktop monitors; reading offline or through RSS readers; seamless navigation between this publication and Bret's primary portfolio.
 
 ## Capabilities and Constraints
 
-- Next.js (App Router) with Static Site Generation (`generateStaticParams`).
-- Git-backed Markdown/MDX content collections with Zod schema validation.
-- Subdomain routing on `blog.bretmuchoni.dev` via CNAME to main domain `bretmuchoni.dev`.
-- Zero third-party tracker cookies; privacy-first architecture.
-- Full dark/light mode toggle with theme persistence in `localStorage`.
-- Automated RSS 2.0 syndication at `/rss.xml` and dynamic sitemap at `/sitemap.xml`.
+- Built with Next.js (App Router) using pre-rendered static pages.
+- Articles authored in Markdown and MDX files with automated structure validation.
+- Hosted at `blog.bretmuchoni.dev` as a direct subdomain of `bretmuchoni.dev`.
+- Privacy-first design with no third-party tracking cookies or advertising scripts.
+- Dark and light modes with user preferences saved in the browser.
+- Automatic RSS 2.0 feed at `/rss.xml` and dynamic search engine sitemap at `/sitemap.xml`.
+- Reading progress bars, table of contents highlighting, and hover transitions respect motion sensitivity preferences and work without JavaScript where possible.
 
 ## Brand Commitments
 
-- Inherits visual authority from Bret Muchoni's Tactical Design System v2.2.
-- Palette anchors: `--ink` (`#0d0d12`), `--paper` (`#f4f2e8`), `--magenta` (`#ff2e88`), `--cyan` (`#00e5ff`), `--acid-yellow` (`#f5ff00`).
-- Typography anchors: `Bungee` (titles), `Space Grotesk` (narrative), `JetBrains Mono` (code/telemetry), `Silkscreen` (stamps).
-- Authentic retro Win95 pixel cursors and Web 1.0 micro-stamp badges.
+- Shares the visual identity of Bret Muchoni's personal brand, using decorative accents only in designated boundary areas.
+- Color palette: deep dark background (`#0b0b0f`), off-white paper text (`#f4f2e8`), accent magenta (`#ff2e88`), accent cyan (`#00e5ff`), and diagnostic yellow (`#f5ff00`, warnings only).
+- Fonts: `Bungee` (site title only), `Space Grotesk` (articles and headings), `JetBrains Mono` (code and metadata), and `Silkscreen` (status badges only).
+- Pixel arrow cursors on clickable buttons and links, paired with classic retro web badges in the footer.
 
 ## Evidence on Hand
 
-- Main portfolio repository and live deployment at `bretmuchoni.dev`.
-- Portfolio design specification (`portfolio/DESIGN.md` v2.2).
-- Vibe Coder Markdown starter guide (`vibe_coding_md_files_beginner_guide.docx.md`).
-- Fully functional Next.js 15 App Router codebase in `bretscorner presents/blog`.
+- Main portfolio website running at `bretmuchoni.dev`.
+- Portfolio design guidelines (`portfolio/DESIGN.md`).
+- Markdown writing guide (`vibe_coding_md_files_beginner_guide.docx.md`).
+- Next.js codebase in the `bretscorner presents/blog` repository.
 
 ## Product Principles
 
-1. **High Signal, Zero Bloat:** Content and speed come first. No popups, no consent walls, no tracking scripts.
-2. **Commit to the World:** Every surface—from cursors to code blocks—carries the tactile anime HUD aesthetic. Never dilute into generic rounded SaaS patterns.
-3. **Engineered Precision:** Strict TypeScript typing, static prerendering, and validated metadata on every route.
-4. **Accessible Contrast:** High-chroma shout colors (`--acid-yellow`) are used strictly for diagnostics; all reading prose meets WCAG AAA standards.
+1. **Fast and Focused:** Content and performance come first. No popups, no cookie banners, and no analytics bloat.
+2. **Calm Center, Expressive Edges:** The reading column stays quiet and distraction-free. Personality belongs in the header, article lists, navigation, and footer.
+3. **Reliable Craft:** Strict code typing, pre-rendered static pages, and validated article data on every build.
+4. **Accessible Contrast:** All body text meets high accessibility contrast standards. Bright accent colors are used sparingly, and yellow is reserved exclusively for warnings and notes.

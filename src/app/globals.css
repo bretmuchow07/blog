@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Silkscreen:wght@400;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -11,63 +11,71 @@
   --surface-elevated: #181822;
   --surface-subtle: #1c1c28;
 
-  /* Hairline Precision Borders */
+  /* Thin Precision Borders & Blueprint Dot-Grid */
   --border-color: rgba(244, 242, 232, 0.1);
-  --border-hover: rgba(244, 242, 232, 0.24);
-  --border-accent: rgba(0, 229, 255, 0.4);
+  --border-hover: rgba(244, 242, 232, 0.22);
+  --border-accent: rgba(0, 229, 255, 0.35);
+  --grid-dot: rgba(244, 242, 232, 0.05);
 
   /* High-Contrast Typographic Hierarchy */
   --text-primary: #f4f2e8;
   --text-secondary: #9c9cae;
   --text-muted: #606072;
 
-  /* Singular Electric Cyan Accent (10% Rule) */
+  /* Accent Family */
   --accent: #00e5ff;
-  --accent-muted: rgba(0, 229, 255, 0.15);
-  --accent-glow: rgba(0, 229, 255, 0.08);
+  --accent-muted: rgba(0, 229, 255, 0.12);
+  --accent-glow: rgba(0, 229, 255, 0.05);
+  --accent-magenta: #ff2e88;
   --accent-secondary: #ff2e88;
+  --accent-yellow: #f5ff00;
 
   /* Code Surface */
-  --code-bg: #0e0e14;
-  --code-border: rgba(244, 242, 232, 0.08);
+  --code-bg: #181822;
+  --code-border: rgba(244, 242, 232, 0.1);
 
   /* Typography */
   --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-  --font-brand: 'Bungee', cursive, sans-serif;
+  --font-display: 'Bungee', cursive, sans-serif;
+  --font-stamp: 'Silkscreen', monospace;
 
-  /* Retro Cursors */
+  /* Retro Win95 Cursors */
   --cursor-default: url('/assets/cursors/win95-cursor.cur'), url('/assets/cursors/win95-cursor.png'), auto;
   --cursor-pointer: url('/assets/cursors/win95-pointer.cur'), url('/assets/cursors/win95-pointer.png'), pointer;
 }
 
-/* Light Mode: Architectural Blueprint Paper */
+/* Light Mode: Blueprint Paper */
 body.light-mode {
   --canvas-bg: #f7f7f9;
   --surface-bg: #ffffff;
   --surface-elevated: #f0f0f4;
-  --surface-subtle: #e8e8ed;
+  --surface-subtle: #eeeef2;
 
-  --border-color: rgba(17, 17, 24, 0.1);
-  --border-hover: rgba(17, 17, 24, 0.25);
-  --border-accent: rgba(0, 136, 153, 0.4);
+  --border-color: rgba(17, 17, 22, 0.1);
+  --border-hover: rgba(17, 17, 22, 0.22);
+  --border-accent: rgba(0, 131, 143, 0.4);
+  --grid-dot: rgba(17, 17, 22, 0.05);
 
   --text-primary: #111116;
   --text-secondary: #525260;
-  --text-muted: #828292;
+  --text-muted: #76768a;
 
-  --accent: #008899;
-  --accent-muted: rgba(0, 136, 153, 0.12);
-  --accent-glow: rgba(0, 136, 153, 0.05);
+  /* Accessible teal for text on light mode; true #00e5ff for fills & hairlines */
+  --accent: #00838f;
+  --accent-muted: rgba(0, 131, 143, 0.12);
+  --accent-glow: rgba(0, 131, 143, 0.05);
+  --accent-magenta: #ff2e88;
   --accent-secondary: #c91860;
+  --accent-yellow: #f5ff00;
 
   --code-bg: #f0f0f4;
-  --code-border: rgba(17, 17, 24, 0.08);
+  --code-border: rgba(17, 17, 22, 0.1);
 }
 
 /* Base Document */
 html {
-  cursor: var(--cursor-default);
+  cursor: auto;
   scroll-behavior: smooth;
 }
 
@@ -80,13 +88,18 @@ body {
   min-height: 100vh;
 }
 
-a, button, input[type="submit"], [role="button"] {
+/* Pixel cursor applied to clickable elements only. Reading prose retains the standard I-beam */
+a, button, input[type="submit"], [role="button"], select {
   cursor: var(--cursor-pointer) !important;
+}
+
+p, h1, h2, h3, h4, h5, h6, input[type="text"], textarea, pre, code {
+  cursor: auto;
 }
 
 /* Craft Floor: Themed Browser Surfaces */
 ::selection {
-  background-color: var(--accent-secondary);
+  background-color: var(--accent-magenta);
   color: #ffffff;
 }
 
@@ -99,23 +112,44 @@ a, button, input[type="submit"], [role="button"] {
   outline-offset: 2px;
 }
 
-/* Status Pulse Dot */
-@keyframes pulse-subtle {
-  0% { transform: scale(0.95); opacity: 0.8; }
-  50% { transform: scale(1.15); opacity: 1; }
-  100% { transform: scale(0.95); opacity: 0.8; }
+/* Blueprint Dot-Grid */
+.bg-dot-grid {
+  background-image: radial-gradient(var(--grid-dot) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
 }
 
-.status-dot {
+/* Topic Dot Indicator */
+.topic-dot {
   display: inline-block;
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background-color: var(--accent);
-  animation: pulse-subtle 2.5s infinite ease-in-out;
+  flex-shrink: 0;
 }
 
-/* Custom Tactical Scrollbar */
+/* Pull-quote without side borders, with magenta opening quote glyph */
+.pull-quote {
+  position: relative;
+  margin: 2rem 0;
+  padding-top: 1.25rem;
+  font-family: var(--font-sans);
+  font-style: italic;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: var(--text-primary);
+}
+
+.pull-quote::before {
+  content: '“';
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 3.5rem;
+  line-height: 0.8;
+  color: var(--accent-magenta);
+  margin-bottom: 0.25rem;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

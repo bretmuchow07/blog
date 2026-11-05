@@ -8,15 +8,14 @@ export default function ReadingProgress() {
   useEffect(() => {
     const updateScrollCompletion = () => {
       const currentProgress = window.scrollY;
-      const scrollHeight = document.body.scrollHeight - window.innerHeight;
-      if (scrollHeight) {
-        setCompletion(
-          Number((currentProgress / scrollHeight).toFixed(3)) * 100
-        );
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (scrollHeight > 0) {
+        setCompletion(Math.min(100, Math.max(0, (currentProgress / scrollHeight) * 100)));
       }
     };
 
-    window.addEventListener('scroll', updateScrollCompletion);
+    window.addEventListener('scroll', updateScrollCompletion, { passive: true });
+    updateScrollCompletion();
     return () => {
       window.removeEventListener('scroll', updateScrollCompletion);
     };
@@ -24,10 +23,11 @@ export default function ReadingProgress() {
 
   return (
     <div
-      className="fixed top-0 left-0 h-[2px] bg-[var(--accent)] z-50 transition-all duration-75 ease-out"
+      className="fixed top-16 left-0 h-[2px] bg-gradient-to-r from-[var(--accent)] to-[var(--accent-magenta)] z-50 pointer-events-none transition-all duration-75 ease-out"
       style={{ width: `${completion}%` }}
       role="progressbar"
-      aria-valuenow={completion}
+      aria-label="Reading progress"
+      aria-valuenow={Math.round(completion)}
       aria-valuemin={0}
       aria-valuemax={100}
     />
